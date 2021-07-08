@@ -1,0 +1,43 @@
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: litmus-kafka-deployer
+  labels:
+    app: litmus-kafka-deployer
+spec:
+  serviceAccountName: litmus-kafka-sa
+  restartPolicy: Never
+  containers:
+  - name: litmus-kafka-deployer-container
+    image: litmuschaos/kafka-deployer:latest
+    imagePullPolicy: Always
+    envFrom:
+        - secretRef:
+              name: aws-secret
+    env:
+        ##  It defines the mode of the experiment
+        ##Supported values: setup, cleanup
+        - name: MODE
+          value: "setup"
+          
+         ## It defines the platform of the k8s cluster
+         ## Supported value: eks
+        - name: PLATFORM
+          value: "eks"
+        
+        ## It defines the kubectl-Kudo version
+        - name: KUDO_VERSION
+          value: 0.12.0
+        
+        ## Name of namespace where kafka will be installed
+        - name: KAFKA_NAMESPACE 
+          value: "kafka" 
+
+        ## Name of namespace where prometheus and grafana will be installed  
+        - name: MONITORING_NAMESPACE
+          value: "monitoring"
+
+        ## Tag of LITMUS Repository  
+        - name: LITMUS_GIT_TAG
+          value: 2.0.0-Beta7  
