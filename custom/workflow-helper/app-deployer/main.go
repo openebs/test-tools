@@ -111,6 +111,8 @@ func GetData() (*AppVars, error) {
 		appVars.filePath = *filePath + "-sock-shop.yaml"
 	case "app=podtato-head":
 		appVars.filePath = *filePath + "-podtato-head.yaml"
+	case "app=bank-of-anthos":
+		appVars.filePath = *filePath + "-bank-of-anthos.yaml"
 	default:
 		return &appVars, fmt.Errorf("app '%v' not supported in app-deployer", appVars.app)
 	}
@@ -137,7 +139,6 @@ func CreateApp(path, ns, operation string) error {
 	command.Stdout = &out
 	command.Stderr = &stderr
 	if err := command.Run(); err != nil {
-		log.Infof(" %v", stderr.String())
 		return err
 	}
 	return nil
@@ -150,7 +151,6 @@ func DeleteApp(path, ns string) error {
 	command.Stdout = &out
 	command.Stderr = &stderr
 	if err := command.Run(); err != nil {
-		log.Infof(" %v", stderr.String())
 		return err
 	}
 	return nil
@@ -160,7 +160,6 @@ func DeleteApp(path, ns string) error {
 func CreateApplication(appVars *AppVars, delay int, clientset *kubernetes.Clientset) error {
 
 	log.Infof("[Status]: FilePath for App Deployer is %v", appVars.filePath)
-
 	switch strings.ToLower(appVars.scope) {
 	case "cluster":
 		if err := CreateNamespace(clientset, appVars.namespace); err != nil {
